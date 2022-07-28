@@ -1,0 +1,58 @@
+version: 2.1
+
+orbs:
+  terraform: 'circleci/terraform@2.1'
+
+parameters:
+  environment:
+    type: string
+    default: ""
+jobs:
+  single-job-lifecycle:
+    executor: terraform/default
+    steps:
+      - checkout
+      - run:
+          command: >-
+                GIT_SSH_COMMAND='ssh -vv -i ~/.ssh/id_rsa'
+                git clone https://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@github.com/Shantanusri123/Tfvars.git
+          name: GIT Clone TFvars repository
+      - run:
+          command: >-
+                GIT_SSH_COMMAND='ssh -vv -i ~/.ssh/id_rsa'
+                git clone https://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@github.com/Shantanusri123/Terraform.git
+          name: GIT Clone Terraform repository
+      - terraform/init:
+          path: .
+      - run:
+          name: "terraform create workspace"
+          command: terraform workspace new <<pipeline.parameters.environment>>
+      - terraform/validate:
+          path: 
+      - run:
+          name: "terraform plan"
+          command: terraform plan -var-file "./Tfvars/tfvars/<<pipeline.parameters.environment>>/s3.tfvars"
+      - persist_to_workspace:
+          root: .
+          paths: .
+
+  apply-job-lifecycle:
+    executor: terraform/default
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: "terraform apply"
+          command: terraform apply -auto-approve -var-file "./Tfvars/tfvars/<<pipeline.parameters.environment>>/s3.tfvars"
+    working_directory: ~/src
+workflows:
+  single-job-lifecycle: 
+    jobs:
+      - single-job-lifecycle
+      - hold:
+          type: approval
+          requires:
+            - single-job-lifecycle
+      - apply-job-lifecycle:
+          requires:
+            - hold
