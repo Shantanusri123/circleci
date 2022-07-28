@@ -34,7 +34,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths: .
-    working_directory: .
+    working_directory: ~
 
   plan-job-lifecycle:
     executor: terraform/default
@@ -49,7 +49,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths: .
-    working_directory: .
+    working_directory: ~
 
   apply-job-lifecycle:
     executor: terraform/default
@@ -59,7 +59,7 @@ jobs:
       - run:
           name: "terraform apply"
           command: terraform apply -auto-approve -var-file "./ec2-instance-tfvars/<<pipeline.parameters.environment>>.tfvars"
-    working_directory: .
+    working_directory: ~
 workflows:
   single-job-lifecycle: 
     jobs:
