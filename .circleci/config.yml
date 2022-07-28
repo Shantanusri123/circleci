@@ -23,7 +23,7 @@ jobs:
                 git clone https://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@github.com/Shantanusri123/ec2-instance-tfvars.git
           name: GIT Clone ec2-instance-tfvars repository
       - run:
-          command: git remote add origin https://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@github.com/Shantanusri123/ec2-Instance.git
+          command: git remote add origin https://github.com/Shantanusri123/ec2-Instance.git
       - terraform/init:
           path: "./ec2-Instance"
       - run:
