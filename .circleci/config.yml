@@ -16,14 +16,14 @@ jobs:
           command: >-
                 GIT_SSH_COMMAND='ssh -vv -i ~/.ssh/id_rsa'
                 git clone https://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@github.com/Shantanusri123/ec2-instance-tfvars.git
+                pwd
           name: GIT Clone ec2-instance-tfvars repository
       - run:
           command: >-
                 GIT_SSH_COMMAND='ssh -vv -i ~/.ssh/id_rsa'
                 git clone https://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@github.com/Shantanusri123/ec2-Instance.git
+                pwd
           name: GIT Clone ec2-instance repository
-      - run:
-          command: git remote  https://github.com/Shantanusri123/ec2-Instance.git
       - terraform/init:
           path: "./ec2-Instance"
       - run:
