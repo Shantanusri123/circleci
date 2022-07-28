@@ -15,15 +15,15 @@ jobs:
       - run:
           command: >-
                 GIT_SSH_COMMAND='ssh -vv -i ~/.ssh/id_rsa'
-                git clone https://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@github.com/Shantanusri123/ec2-Instance.git
-          name: GIT Clone ec2-instance repository
-      - run:
-          command: >-
-                GIT_SSH_COMMAND='ssh -vv -i ~/.ssh/id_rsa'
                 git clone https://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@github.com/Shantanusri123/ec2-instance-tfvars.git
           name: GIT Clone ec2-instance-tfvars repository
       - run:
-          command: git remote add origin https://github.com/Shantanusri123/ec2-Instance.git
+          command: >-
+                GIT_SSH_COMMAND='ssh -vv -i ~/.ssh/id_rsa'
+                git clone https://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@github.com/Shantanusri123/ec2-Instance.git
+          name: GIT Clone ec2-instance repository
+      - run:
+          command: git remote  https://github.com/Shantanusri123/ec2-Instance.git
       - terraform/init:
           path: "./ec2-Instance"
       - run:
