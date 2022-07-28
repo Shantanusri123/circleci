@@ -31,7 +31,7 @@ jobs:
           path: 
       - run:
           name: "terraform plan"
-          command: terraform -chdir="./ec2-Instance" plan -var-file "./ec2-instance-tfvars/<<pipeline.parameters.environment>>.tfvars"
+          command: terraform -chdir="./ec2-Instance" plan --var-file "./ec2-instance-tfvars/<<pipeline.parameters.environment>>.tfvars"
       - persist_to_workspace:
           root: .
           paths: .
