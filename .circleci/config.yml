@@ -23,17 +23,14 @@ jobs:
                 git clone https://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@github.com/Shantanusri123/ec2-Instance.git
           name: GIT Clone ec2-instance repository
       - terraform/init:
-          path: "./ec2-Instance"
+          path: "./"
       - run:
           command: pwd
       - run:
           name: "terraform create workspace"
           command: terraform workspace new <<pipeline.parameters.environment>>
       - terraform/validate:
-          path: "./ec2-Instance"
-      - persist_to_workspace:
-          root: .
-          paths: .
+          path: "./"
       - run:
           command: pwd
       - run:
