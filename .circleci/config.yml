@@ -34,13 +34,6 @@ jobs:
       - persist_to_workspace:
           root: .
           paths: .
-    working_directory: ~src
-
-  plan-job-lifecycle:
-    executor: terraform/default
-    steps: 
-      - attach_workspace:
-          at: .
       - run:
           command: pwd
       - run:
@@ -64,13 +57,10 @@ workflows:
   single-job-lifecycle: 
     jobs:
       - single-job-lifecycle
-      - plan-job-lifecycle:
-          requires:
-            - single-job-lifecycle
       - hold:
           type: approval
           requires:
-            - plan-job-lifecycle
+            - single-job-lifecycle
       - apply-job-lifecycle:
           requires:
             - hold
