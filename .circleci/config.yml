@@ -28,7 +28,17 @@ jobs:
           name: "terraform create workspace"
           command: terraform workspace new <<pipeline.parameters.environment>>
       - terraform/validate:
-          path: 
+          path:
+      - persist_to_workspace:
+          root: .
+          paths: .
+    working_directory: ~src
+
+  plan-job-lifecycle:
+    executor: terraform/default
+    steps: 
+      - attach_workspace:
+          at: .
       - run:
           name: "terraform plan"
           command: terraform -chdir="./ec2-Instance" plan -var-file="../ec2-instance-tfvars/<<pipeline.parameters.environment>>.tfvars"
@@ -50,10 +60,13 @@ workflows:
   single-job-lifecycle: 
     jobs:
       - single-job-lifecycle
+      - plan-job-lifecycle:
+          requires:
+            - single-job-lifecycle
       - hold:
           type: approval
           requires:
-            - single-job-lifecycle
+            - plan-job-lifecycle
       - apply-job-lifecycle:
           requires:
             - hold
