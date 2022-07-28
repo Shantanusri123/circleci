@@ -31,7 +31,7 @@ jobs:
           path: 
       - run:
           name: "terraform plan"
-          command: terraform plan -var-file "<<pipeline.parameters.environment>>.tfvars"
+          command: terraform plan -var-file "./<<pipeline.parameters.environment>>.tfvars"
       - persist_to_workspace:
           root: .
           paths: .
@@ -43,7 +43,7 @@ jobs:
           at: .
       - run:
           name: "terraform apply"
-          command: terraform apply -auto-approve -var-file "<<pipeline.parameters.environment>>.tfvars"
+          command: terraform apply -auto-approve -var-file "./<<pipeline.parameters.environment>>.tfvars"
     working_directory: ~/src
 workflows:
   single-job-lifecycle: 
