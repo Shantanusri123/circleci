@@ -22,8 +22,6 @@ jobs:
                 GIT_SSH_COMMAND='ssh -vv -i ~/.ssh/id_rsa'
                 git clone https://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@github.com/Shantanusri123/ec2-instance-tfvars.git
           name: GIT Clone ec2-instance-tfvars repository
-      - run:
-          command: chdir "./ec2-Instance" | pwd
       - terraform/init:
           path: .
       - run:
@@ -37,6 +35,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths: .
+    working_directory: ./ec2-Instance
 
   apply-job-lifecycle:
     executor: terraform/default
@@ -46,7 +45,7 @@ jobs:
       - run:
           name: "terraform apply"
           command: terraform apply -auto-approve -var-file "./ec2-instance-tfvars/<<pipeline.parameters.environment>>.tfvars"
-    working_directory: ~/src
+    working_directory: ./ec2-Instance
 workflows:
   single-job-lifecycle: 
     jobs:
