@@ -25,6 +25,8 @@ jobs:
       - terraform/init:
           path: "./ec2-Instance"
       - run:
+          command: pwd
+      - run:
           name: "terraform create workspace"
           command: terraform workspace new <<pipeline.parameters.environment>>
       - terraform/validate:
@@ -39,6 +41,8 @@ jobs:
     steps: 
       - attach_workspace:
           at: .
+      - run:
+          command: pwd
       - run:
           name: "terraform plan"
           command: terraform -chdir="./ec2-Instance" plan -var-file="../ec2-instance-tfvars/<<pipeline.parameters.environment>>.tfvars"
