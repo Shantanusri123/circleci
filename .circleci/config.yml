@@ -87,7 +87,7 @@ jobs:
           command: terraform -chdir="./ec2-Instance" apply -auto-approve -var-file="../ec2-instance-tfvars/<<pipeline.parameters.environment>>.tfvars"
     working_directory: ~src
 workflows:
-  pipeline: 
+  CircleCI_Terraform_Pipeline: 
     jobs:
       - sg
       - hold:
