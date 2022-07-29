@@ -45,10 +45,6 @@ jobs:
       - run:
           name: "terraform apply"
           command: terraform -chdir="./security_group" apply -auto-approve -var-file="../security_group_tfvars/<<pipeline.parameters.environment>>.tfvars"
-      - run:
-          command: cat security_group/terraform.tfstate
-      - run:
-          command: cd ./securitygroup
     working_directory: ~src
 
   ec2:
