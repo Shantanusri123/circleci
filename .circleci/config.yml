@@ -10,6 +10,7 @@ parameters:
 jobs:
   sg:
     executor: terraform/default
+    steps:
       - run:
           command: >-
                 GIT_SSH_COMMAND='ssh -vv -i ~/.ssh/id_rsa'
@@ -28,7 +29,7 @@ jobs:
           command: terraform workspace new <<pipeline.parameters.environment>>
       - terraform/validate:
           path: "./security_group"
-	  context: terraform
+          context: terraform
       - run:
           name: "terraform plan"
           command: terraform -chdir="./security_group" plan -var-file="../security_group_tfvars/<<pipeline.parameters.environment>>.tfvars"
