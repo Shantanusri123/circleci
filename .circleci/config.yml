@@ -23,7 +23,7 @@ jobs:
           name: GIT Clone ec2-instance repository
       - run:
           name: terraform init
-          command: terraform -chdir="./security_group" init -backend-config="../security_group_tfvars/<<pipeline.parameters.environment>>.tfvars"
+          command: terraform -chdir="./security_group" init -backend-config="../security_group_tfvars/<<pipeline.parameters.environment>>-backend.tfvars"
       - run:
           name: "terraform create workspace"
           command: terraform workspace new <<pipeline.parameters.environment>>
