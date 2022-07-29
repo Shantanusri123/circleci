@@ -8,7 +8,46 @@ parameters:
     type: string
     default: ""
 jobs:
-  single-job-lifecycle:
+  sg:
+    executor: terraform/default
+      - run:
+          command: >-
+                GIT_SSH_COMMAND='ssh -vv -i ~/.ssh/id_rsa'
+                git clone https://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@github.com/Shantanusri123/security_group.git
+          name: GIT Clone ec2-instance-tfvars repository
+      - run:
+          command: >-
+                GIT_SSH_COMMAND='ssh -vv -i ~/.ssh/id_rsa'
+                git clone https://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@github.com/Shantanusri123/security_group_tfvars.git
+          name: GIT Clone ec2-instance repository
+      - run:
+          name: terraform init
+          command: terraform -chdir="./security_group" init
+      - run:
+          name: "terraform create workspace"
+          command: terraform workspace new <<pipeline.parameters.environment>>
+      - terraform/validate:
+          path: "./security_group"
+	  context: terraform
+      - run:
+          name: "terraform plan"
+          command: terraform -chdir="./security_group" plan -var-file="../security_group_tfvars/<<pipeline.parameters.environment>>.tfvars"
+      - persist_to_workspace:
+          root: .
+          paths: .
+    working_directory: ~src
+
+  sg-apply:
+    executor: terraform/default
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: "terraform apply"
+          command: terraform -chdir="./security_group" apply -auto-approve -var-file="../security_group_tfvars/<<pipeline.parameters.environment>>.tfvars"
+    working_directory: ~src
+
+  ec2:
     executor: terraform/default
     steps:
       - checkout
@@ -38,7 +77,7 @@ jobs:
           paths: .
     working_directory: ~src
 
-  apply-job-lifecycle:
+  ec2-apply:
     executor: terraform/default
     steps:
       - attach_workspace:
@@ -50,11 +89,21 @@ jobs:
 workflows:
   single-job-lifecycle: 
     jobs:
-      - single-job-lifecycle
+      - sg
       - hold:
           type: approval
           requires:
-            - single-job-lifecycle
-      - apply-job-lifecycle:
+            - sg
+      - sg-apply:
+          requires:
+            - hold
+      - ec2:
+          requires:
+            - sg-apply
+      - hold:
+          type: approval
+          requires:
+            - ec2
+      - ec-apply:
           requires:
             - hold
