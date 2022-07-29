@@ -49,6 +49,7 @@ jobs:
           command: |
                 cd security_group
                 ls
+                cat terraform.tfstate
       - run:
           command: cd ./securitygroup
     working_directory: ~src
