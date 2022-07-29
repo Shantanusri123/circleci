@@ -29,7 +29,6 @@ jobs:
           command: terraform workspace new <<pipeline.parameters.environment>>
       - terraform/validate:
           path: "./security_group"
-          context: terraform
       - run:
           name: "terraform plan"
           command: terraform -chdir="./security_group" plan -var-file="../security_group_tfvars/<<pipeline.parameters.environment>>.tfvars"
@@ -88,23 +87,25 @@ jobs:
           command: terraform -chdir="./ec2-Instance" apply -auto-approve -var-file="../ec2-instance-tfvars/<<pipeline.parameters.environment>>.tfvars"
     working_directory: ~src
 workflows:
-  single-job-lifecycle: 
+  pipeline: 
     jobs:
       - sg
       - hold:
+          name: sg-apply-hold
           type: approval
           requires:
             - sg
       - sg-apply:
           requires:
-            - hold
+            - sg-apply-hold
       - ec2:
           requires:
             - sg-apply
       - hold:
+          name: ec2-apply-hold
           type: approval
           requires:
             - ec2
-      - ec-apply:
+      - ec2-apply:
           requires:
-            - hold
+            - ec2-apply-hold
